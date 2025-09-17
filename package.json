@@ -1,0 +1,11 @@
+{
+  "name": "nhash",
+  "version": "1.0.0",
+  "description": "Hash identification tool",
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "dependencies": {
+    "@netlify/functions": "^1.0.0"
+  }
+}

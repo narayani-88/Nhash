@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhash 🔍</title>
+    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/logo.png" alt="Nhash Logo" class="logo-img">
+            <span>Nhash</span>
+        </div>
+        <div class="tagline">Detect. Identify. Crack.</div>
+    </header>
+
+    <main>
+        <div class="container">
+            <form id="hashForm">
+                <textarea id="hashInput" placeholder="Enter your hash(es) here, one per line..." required></textarea>
+                <button type="submit">Identify Hash</button>
+            </form>
+            <div id="results"></div>
+        </div>
+    </main>
+
+    <footer>
+        🔒 Powered by Nhash | Detect. Identify. Crack.
+    </footer>
+
+    <script src="/app.js"></script>
+</body>
+</html>
