@@ -51,7 +51,14 @@ Desktop.ini
 
 # Project specific
 public/
+
+# Netlify
+.netlify/
+.netlify/
 netlify.toml
 netlify/
+
+# Node
 package.json
 package-lock.json
+node_modules/
