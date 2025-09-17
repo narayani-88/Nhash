@@ -50,15 +50,18 @@ ehthumbs.db
 Desktop.ini
 
 # Project specific
-public/
+public/*
+!public/index.html
+!public/style.css
+!public/logo.png
+!public/favicon.png
+!public/app.js
+
+# Node
+node_modules/
+__pycache__/
+*.pyc
+.env
 
 # Netlify
 .netlify/
-.netlify/
-netlify.toml
-netlify/
-
-# Node
-package.json
-package-lock.json
-node_modules/
