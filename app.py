@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, session
+import os
 import re
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')  # Change 'dev-secret-key' to something else for local development
 
 # Extended hash info
 hash_info = {
@@ -99,4 +100,4 @@ def index():
     return render_template("index.html", results=session.get("history", []))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
