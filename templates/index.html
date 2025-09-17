@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>HashSleuth 🔍</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <header>
-    <div class="logo">🔍 HashSleuth</div>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="HashSleuth Logo" class="logo-img">
+        <div class="logo-text">HashSleuth</div>
+    </div>
     <div class="tagline">Detect. Identify. Crack.</div>
 </header>
 
