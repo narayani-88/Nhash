@@ -100,4 +100,5 @@ def index():
     return render_template("index.html", results=session.get("history", []))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
