@@ -3,26 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>HashSleuth 🔍</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <header>
-    <div class="logo">
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="HashSleuth Logo" class="logo-img">
-    <span>HashSleuth</span>
-</div>
+    <div class="logo">🔍 HashSleuth</div>
     <div class="tagline">Detect. Identify. Crack.</div>
 </header>
 
 <main>
     <div class="container">
         <!-- Add hashes -->
-        <form id="hashForm">
-            <textarea id="hashInput" placeholder="Enter your hash(es) here, one per line..." required></textarea>
+        <form method="POST">
+            <textarea name="hash_input" placeholder="Enter your hash(es) here, one per line..." required></textarea>
             <button type="submit">Identify Hash</button>
         </form>
-        <div id="results"></div>
 
         <!-- Clear all history -->
         <form method="POST">
@@ -74,69 +69,9 @@
 </footer>
 
 <script>
-async function identifyHash(hash) {
-    try {
-        const response = await fetch('/.netlify/functions/identify-hash', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ hash })
-        });
-        return await response.json();
-    } catch (error) {
-        console.error('Error:', error);
-        return { error: 'Failed to identify hash' };
-    }
-}
-
-async function handleSubmit(event) {
-    event.preventDefault();
-    const hashes = document.getElementById('hashInput').value.split('\n').filter(h => h.trim());
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '<p>Identifying hashes...</p>';
-
-    const results = [];
-    for (const hash of hashes) {
-        const result = await identifyHash(hash);
-        results.push({ hash, ...result });
-    }
-
-    displayResults(results);
-}
-
-function displayResults(results) {
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = `
-        <h2>Results:</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Hash</th>
-                    <th>Type</th>
-                    <th>Hashcat Mode</th>
-                    <th>John Format</th>
-                    <th>Copy</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${results.map(r => `
-                    <tr>
-                        <td>${r.hash}</td>
-                        <td>${r.type || 'Unknown'}</td>
-                        <td>${r.hashcat || 'N/A'}</td>
-                        <td>${r.john || 'N/A'}</td>
-                        <td><button onclick="copyText('${r.hash}')">📋</button></td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-}
-
 function copyText(text) {
     navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
 }
-
-document.getElementById('hashForm').addEventListener('submit', handleSubmit);
 </script>
 </body>
 </html>
