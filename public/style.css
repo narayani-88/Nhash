@@ -251,6 +251,21 @@ tr.cracked {
     font-weight: bold;
 }
 
+.method-bcrypt_dictionary {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.method-bcrypt_timeout, .method-bcrypt_unavailable {
+    color: #f39c12;
+    font-style: italic;
+}
+
+.method-bcrypt_error {
+    color: var(--error-color);
+    font-style: italic;
+}
+
 .failed {
     color: var(--error-color);
     font-style: italic;

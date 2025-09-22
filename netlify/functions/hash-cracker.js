@@ -1,4 +1,10 @@
 const crypto = require('crypto');
+let bcrypt;
+try {
+    bcrypt = require('bcrypt');
+} catch (error) {
+    console.log('bcrypt not available, bcrypt cracking disabled');
+}
 
 // Common password dictionary
 const commonPasswords = [
@@ -140,6 +146,81 @@ function bruteForceLength(targetHash, algorithm, charset, length) {
     return generateCombinations(charset, length);
 }
 
+// Bcrypt cracking (limited dictionary attack with timeout)
+async function bcryptAttack(targetHash, maxAttempts = 20, timeoutMs = 10000) {
+    if (!bcrypt) {
+        return {
+            cracked: false,
+            method: 'bcrypt_unavailable',
+            message: 'bcrypt library not available',
+            timeElapsed: 0
+        };
+    }
+
+    const startTime = Date.now();
+    
+    // Create a promise that will timeout
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), timeoutMs);
+    });
+
+    try {
+        // Limit to most common passwords to prevent long execution
+        const limitedPasswords = commonPasswords.slice(0, maxAttempts);
+        
+        const crackingPromise = (async () => {
+            for (const password of limitedPasswords) {
+                // Check if we've exceeded time limit
+                if (Date.now() - startTime > timeoutMs) {
+                    throw new Error('Timeout');
+                }
+                
+                try {
+                    const isMatch = await bcrypt.compare(password, targetHash);
+                    if (isMatch) {
+                        return {
+                            cracked: true,
+                            method: 'bcrypt_dictionary',
+                            password: password,
+                            timeElapsed: Date.now() - startTime
+                        };
+                    }
+                } catch (bcryptError) {
+                    // If bcrypt.compare fails, the hash might be malformed
+                    continue;
+                }
+            }
+            
+            return {
+                cracked: false,
+                method: 'bcrypt_dictionary',
+                message: `Tested ${limitedPasswords.length} common passwords, none matched`,
+                timeElapsed: Date.now() - startTime
+            };
+        })();
+
+        // Race between cracking and timeout
+        return await Promise.race([crackingPromise, timeoutPromise]);
+        
+    } catch (error) {
+        if (error.message === 'Timeout') {
+            return {
+                cracked: false,
+                method: 'bcrypt_timeout',
+                message: `Timeout after ${timeoutMs}ms - bcrypt is intentionally slow`,
+                timeElapsed: Date.now() - startTime
+            };
+        }
+        
+        return {
+            cracked: false,
+            method: 'bcrypt_error',
+            message: `Error during bcrypt cracking: ${error.message}`,
+            timeElapsed: Date.now() - startTime
+        };
+    }
+}
+
 // Online hash lookup (simulated - in real implementation, you'd call actual APIs)
 async function onlineLookup(targetHash, hashType) {
     // Simulate some known cracked hashes
@@ -192,6 +273,11 @@ function getAlgorithmFromType(hashType) {
 async function crackHash(targetHash, hashType) {
     const startTime = Date.now();
     
+    // Handle bcrypt specially (it requires different approach)
+    if (hashType.includes('bcrypt')) {
+        return await bcryptAttack(targetHash, 20, 10000); // 20 attempts, 10 second timeout
+    }
+    
     // Try online lookup first (fastest)
     const onlineResult = await onlineLookup(targetHash, hashType);
     if (onlineResult) {
@@ -237,5 +323,6 @@ module.exports = {
     generateHash,
     dictionaryAttack,
     bruteForceAttack,
-    onlineLookup
+    onlineLookup,
+    bcryptAttack
 };
