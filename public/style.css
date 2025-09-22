@@ -192,6 +192,82 @@ footer {
     font-size: 0.9rem;
 }
 
+/* Checkbox Styles */
+.form-options {
+    margin: 1rem 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+}
+
+/* Crack Result Styles */
+tr.cracked {
+    background-color: rgba(46, 204, 113, 0.1);
+    border-left: 4px solid var(--success-color);
+}
+
+.cracked-password {
+    color: var(--success-color);
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.not-cracked {
+    color: var(--error-color);
+    font-style: italic;
+}
+
+.not-attempted {
+    color: #95a5a6;
+    font-style: italic;
+}
+
+.crack-method {
+    font-size: 0.85rem;
+}
+
+.method-dictionary, .method-online_database {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.method-dictionary_variation {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.method-brute_force {
+    color: #e67e22;
+    font-weight: bold;
+}
+
+.failed {
+    color: var(--error-color);
+    font-style: italic;
+}
+
+.copy-password {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+    margin-left: 0.25rem;
+}
+
+.copy-password:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -217,5 +293,10 @@ footer {
     
     .tagline {
         font-size: 1rem;
+    }
+    
+    .copy-btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem;
     }
 }

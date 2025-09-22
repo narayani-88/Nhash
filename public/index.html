@@ -20,6 +20,13 @@
         <div class="container">
             <form id="hashForm">
                 <textarea id="hashInput" placeholder="Enter your hash(es) here, one per line..." required></textarea>
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="crackOption">
+                        <span class="checkmark"></span>
+                        Attempt to crack hashes (may take longer)
+                    </label>
+                </div>
                 <button type="submit">Identify Hash</button>
             </form>
             <div id="results"></div>

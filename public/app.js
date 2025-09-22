@@ -13,13 +13,19 @@ async function handleSubmit(event) {
         return;
     }
 
+    const crackOption = document.getElementById('crackOption').checked;
     const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '<p class="loading">Identifying hashes...</p>';
+    
+    if (crackOption) {
+        resultsDiv.innerHTML = '<p class="loading">🔍 Identifying and attempting to crack hashes... This may take a while.</p>';
+    } else {
+        resultsDiv.innerHTML = '<p class="loading">Identifying hashes...</p>';
+    }
 
     try {
         const results = [];
         for (const hash of hashes) {
-            const result = await identifyHash(hash);
+            const result = await identifyHash(hash, crackOption);
             results.push({ hash, ...result });
         }
         displayResults(results);
@@ -29,12 +35,12 @@ async function handleSubmit(event) {
     }
 }
 
-async function identifyHash(hash) {
+async function identifyHash(hash, crack = false) {
     try {
         const response = await fetch('/.netlify/functions/identify-hash', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ hash })
+            body: JSON.stringify({ hash, crack })
         });
         
         if (!response.ok) {
@@ -62,6 +68,8 @@ function displayResults(results) {
         return;
     }
 
+    const hasCrackResults = results.some(r => r.crack);
+    
     resultsDiv.innerHTML = `
         <div class="results-container">
             <h2>Results:</h2>
@@ -72,22 +80,51 @@ function displayResults(results) {
                         <th>Type</th>
                         <th>Hashcat Mode</th>
                         <th>John Format</th>
+                        ${hasCrackResults ? '<th>Cracked Password</th><th>Method</th>' : ''}
                         <th>Copy</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${results.map(result => `
-                        <tr class="${result.error ? 'error' : ''}">
+                        <tr class="${result.error ? 'error' : (result.crack && result.crack.cracked ? 'cracked' : '')}">
                             <td class="hash-cell">${escapeHtml(result.hash)}</td>
                             <td>${result.error ? '❌ Error' : escapeHtml(result.type)}</td>
                             <td>${escapeHtml(result.hashcat || 'N/A')}</td>
                             <td>${escapeHtml(result.john || 'N/A')}</td>
+                            ${hasCrackResults ? `
+                                <td class="crack-result">
+                                    ${result.crack ? 
+                                        (result.crack.cracked ? 
+                                            `<span class="cracked-password">🔓 ${escapeHtml(result.crack.password)}</span>` : 
+                                            '<span class="not-cracked">🔒 Not cracked</span>'
+                                        ) : 
+                                        '<span class="not-attempted">-</span>'
+                                    }
+                                </td>
+                                <td class="crack-method">
+                                    ${result.crack ? 
+                                        (result.crack.cracked ? 
+                                            `<span class="method-${result.crack.method}">${escapeHtml(result.crack.method.replace('_', ' '))}</span>
+                                             <br><small>${result.crack.timeElapsed}ms</small>` : 
+                                            `<span class="failed">${escapeHtml(result.crack.message || 'Failed')}</span>`
+                                        ) : 
+                                        '-'
+                                    }
+                                </td>
+                            ` : ''}
                             <td>
                                 <button onclick="copyToClipboard('${escapeHtml(result.hash)}')" 
                                         class="copy-btn" 
-                                        title="Copy to clipboard">
+                                        title="Copy hash to clipboard">
                                     📋
                                 </button>
+                                ${result.crack && result.crack.cracked ? `
+                                    <button onclick="copyToClipboard('${escapeHtml(result.crack.password)}')" 
+                                            class="copy-btn copy-password" 
+                                            title="Copy password to clipboard">
+                                        🔑
+                                    </button>
+                                ` : ''}
                             </td>
                         </tr>
                     `).join('')}
