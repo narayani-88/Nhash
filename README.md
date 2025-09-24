@@ -2,23 +2,7 @@
 
 HashSleuth is a web application that helps you identify different types of cryptographic hashes. It can detect various hash types and provide information about them, including their corresponding Hashcat and John the Ripper formats.
 
-## 🚀 Deployment
 
-This application is designed to be deployed on [Render.com](https://render.com/). Follow these steps to deploy:
-
-1. **Sign up/Log in** to [Render.com](https://render.com/)
-2. Click **New +** and select **Web Service**
-3. Connect your GitHub repository
-4. Select your repository and branch
-5. Configure your service:
-   - **Name**: nhash (or your preferred name)
-   - **Region**: Choose the one closest to your users
-   - **Branch**: main (or your main branch name)
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn app:app`
-6. Click **Create Web Service**
-
-Your application will be live at `https://your-app-name.onrender.com`
 
 ## Features
 
