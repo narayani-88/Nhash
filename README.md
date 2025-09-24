@@ -1,4 +1,4 @@
-# HashSleuth 🔍
+# nHash 🔍
 
 HashSleuth is a web application that helps you identify different types of cryptographic hashes. It can detect various hash types and provide information about them, including their corresponding Hashcat and John the Ripper formats.
 
